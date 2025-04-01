@@ -1,0 +1,16 @@
+date,title,description,source,url,stock
+2023-01-01,AAPL reports record profits,The company exceeded analyst expectations and shows strong performance.,MarketWatch,https://example.com/news/1,AAPL
+2023-01-03,AAPL announces new product line,The company is expanding its product offerings with innovative technology.,Bloomberg,https://example.com/news/2,AAPL
+2023-01-05,AAPL faces regulatory scrutiny,The company is under investigation for potential anti-competitive practices.,CNBC,https://example.com/news/3,AAPL
+2023-01-08,AAPL stock upgraded by analysts,Analysts have increased their price target for the company.,Reuters,https://example.com/news/4,AAPL
+2023-01-12,AAPL to present at conference,The company will showcase its latest technology at the upcoming conference.,Financial Times,https://example.com/news/5,AAPL
+2023-01-02,MSFT exceeds expectations,The company reported strong quarterly results that surpassed market estimates.,MarketWatch,https://example.com/news/6,MSFT
+2023-01-04,MSFT announces layoffs,The company is reducing its workforce as part of organizational changes.,Bloomberg,https://example.com/news/7,MSFT
+2023-01-07,MSFT signs partnership deal,The company has entered into a strategic partnership to expand its market reach.,CNBC,https://example.com/news/8,MSFT
+2023-01-09,MSFT faces competition,The company is experiencing pressure from competitors in key market segments.,Reuters,https://example.com/news/9,MSFT
+2023-01-11,MSFT releases sustainability report,The company has published its environmental and social impact initiatives.,Financial Times,https://example.com/news/10,MSFT
+2023-01-02,GOOGL reports growth in users,The company has seen significant increases in active users across its platforms.,MarketWatch,https://example.com/news/11,GOOGL
+2023-01-06,GOOGL product recall affects sales,The company has issued a recall for a recent product due to technical issues.,Bloomberg,https://example.com/news/12,GOOGL
+2023-01-08,GOOGL expands into new markets,The company is launching services in previously untapped regions.,CNBC,https://example.com/news/13,GOOGL
+2023-01-10,GOOGL stock downgraded,Analysts have revised their outlook following recent developments.,Reuters,https://example.com/news/14,GOOGL
+2023-01-13,GOOGL to attend investor event,The company executives will present at an upcoming investor conference.,Financial Times,https://example.com/news/15,GOOGL
