@@ -35,3 +35,5 @@ def test_analyze_sentiment():
     assert result.iloc[1]['compound'] < 0
     
     assert not result['sentiment_category
+
+    assert all(col in result.columns for col in news_data.columns)
