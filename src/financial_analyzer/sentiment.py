@@ -5,7 +5,6 @@ from nltk.sentiment.vader import SentimentIntensityAnalyzer
 import nltk
 from tqdm import tqdm
 
-# Ensure VADER lexicon is downloaded
 try:
     nltk.data.find('vader_lexicon')
 except LookupError:
@@ -26,13 +25,10 @@ def analyze_sentiment(news_data):
     pandas.DataFrame
         DataFrame with sentiment analysis results
     """
-    # Creating a copy for sentiment analysis
     sentiment_data = news_data.copy()
     
-    # Initializing sentiment analyzer
     sia = SentimentIntensityAnalyzer()
     
-    # Adding financial-specific terms to improve accuracy
     financial_lexicon = {
         "upgraded": 3.0,
         "downgraded": -3.0,
@@ -45,11 +41,9 @@ def analyze_sentiment(news_data):
     }
     
     sia.lexicon.update(financial_lexicon)
-    
-    # Combining title and description for sentiment analysis
+
     sentiment_data['content'] = sentiment_data['title'] + " " + sentiment_data['description'].fillna("")
-    
-    # Applying sentiment analysis to each article
+
     sentiments = []
     for content in tqdm(sentiment_data['content'], desc="Analyzing sentiment"):
         sentiment = sia.polarity_scores(content)
@@ -60,11 +54,9 @@ def analyze_sentiment(news_data):
             'neutral': sentiment['neu']
         })
     
-    # Converting to DataFrame and joining with news data
     sentiment_df = pd.DataFrame(sentiments)
     result = pd.concat([sentiment_data, sentiment_df], axis=1)
     
-    # Categorizing sentiment
     result['sentiment_category'] = pd.cut(
         result['compound'],
         bins=[-1, -0.2, 0.2, 1],
