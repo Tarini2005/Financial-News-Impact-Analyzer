@@ -16,18 +16,17 @@ def save_results(data, filename, directory='results'):
     directory : str, optional
         Directory to save in, defaults to 'results'
     """
-    # Creating directory
+
     if not os.path.exists(directory):
         os.makedirs(directory)
     
-    # Full path
+
     filepath = os.path.join(directory, filename)
     
     # Saving data
     if isinstance(data, pd.DataFrame):
         data.to_csv(filepath, index=False)
     else:
-        # For dictionaries or other types
         pd.DataFrame(data).to_csv(filepath, index=False)
     
     print(f"Saved results to {filepath}")
@@ -48,14 +47,12 @@ def format_date(date_str):
         Formatted date string
     """
     try:
-        # Try parsing with various formats
         for fmt in ['%Y-%m-%d', '%m/%d/%Y', '%d-%m-%Y', '%Y/%m/%d']:
             try:
                 return datetime.strptime(date_str, fmt).strftime('%Y-%m-%d')
             except ValueError:
                 continue
         
-        # If all formats fail, try dateutil
         from dateutil.parser import parse
         return parse(date_str).strftime('%Y-%m-%d')
     
