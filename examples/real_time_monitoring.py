@@ -9,14 +9,12 @@ from src.financial_analyzer.analyzer import FinancialNewsAnalyzer
 
 def create_sentiment_volume_impact(analyzer):
     """Create a visualization showing impact of news volume on price volatility."""
-    # Ensure we have data
     if analyzer.sentiment_data.empty or not analyzer.stock_data:
         print("No data available. Please run analysis first.")
         return
     
     plt.figure(figsize=(12, 8))
     
-    # Process each stock
     results = []
     
     for stock in analyzer.stocks:
@@ -29,24 +27,20 @@ def create_sentiment_volume_impact(analyzer):
         if stock_news.empty:
             continue
         
-        # Calculate daily news count
         daily_news = stock_news.groupby(stock_news['date'].dt.date).size().reset_index()
         daily_news.columns = ['date', 'news_count']
         daily_news['date'] = pd.to_datetime(daily_news['date'])
         
-        # Calculate daily volatility (using high-low range as % of open price)
         stock_data['volatility'] = (stock_data['High'] - stock_data['Low']) / stock_data['Open'] * 100
         
-        # Merge data
         merged = pd.merge(stock_data.reset_index(), daily_news, 
                           left_on=stock_data.index.date, right_on='date', 
                           how='left')
         merged['news_count'].fillna(0, inplace=True)
         
-        # Calculate average volatility by news count
+
         volatility_by_news = merged.groupby('news_count')['volatility'].mean().reset_index()
         
-        # Add to results
         for _, row in volatility_by_news.iterrows():
             results.append({
                 'stock': stock,
@@ -54,10 +48,9 @@ def create_sentiment_volume_impact(analyzer):
                 'avg_volatility': row['volatility']
             })
     
-    # Convert to DataFrame
+
     results_df = pd.DataFrame(results)
     
-    # Create visualization
     sns.barplot(x='news_count', y='avg_volatility', hue='stock', data=results_df)
     plt.title('Average Daily Volatility by News Volume')
     plt.xlabel('Number of News Articles')
@@ -74,19 +67,18 @@ def create_sentiment_wordcloud_by_category(analyzer):
     """Create word clouds for positive and negative sentiment news."""
     from wordcloud import WordCloud
     
-    # Ensure we have data
+
     if analyzer.sentiment_data.empty:
         print("No sentiment data available. Please run analysis first.")
         return
     
-    # Filter positive and negative news
     positive_news = analyzer.sentiment_data[analyzer.sentiment_data['sentiment_category'] == 'Positive']
     negative_news = analyzer.sentiment_data[analyzer.sentiment_data['sentiment_category'] == 'Negative']
     
-    # Set up the plot
+
     fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(16, 8))
     
-    # Generate word clouds
+
     if not positive_news.empty:
         positive_text = ' '.join(positive_news['content'].fillna(''))
         wordcloud_positive = WordCloud(background_color='white', max_words=100, 
@@ -118,14 +110,13 @@ def create_sentiment_wordcloud_by_category(analyzer):
 
 def create_sentiment_timeline(analyzer):
     """Create an interactive timeline of sentiment events."""
-    # Ensure we have data
+
     if analyzer.sentiment_data.empty or not analyzer.stock_data:
         print("No data available. Please run analysis first.")
         return
     
     plt.figure(figsize=(14, 8))
     
-    # Choose the first stock with data
     for stock in analyzer.stocks:
         if stock in analyzer.stock_data and not analyzer.sentiment_data[
             analyzer.sentiment_data['stock'] == stock].empty:
@@ -135,22 +126,20 @@ def create_sentiment_timeline(analyzer):
         print("No suitable stock data found.")
         return
     
-    # Get stock and news data
+
     stock_data = analyzer.stock_data[example_stock].copy()
     stock_news = analyzer.sentiment_data[analyzer.sentiment_data['stock'] == example_stock].copy()
     
-    # Plot stock price
+
     plt.plot(stock_data.index, stock_data['Close'], 'b-', label='Close Price')
-    
-    # Add sentiment markers
+
     for _, news in stock_news.iterrows():
         date = news['date']
         if date in stock_data.index:
-            # Find closest date if exact match not found
+
             closest_date = stock_data.index[stock_data.index.get_indexer([date], method='nearest')[0]]
             price = stock_data.loc[closest_date, 'Close']
-            
-            # Determine marker color based on sentiment
+
             if news['sentiment_category'] == 'Positive':
                 color = 'green'
                 marker = '^'  # up triangle
@@ -161,11 +150,10 @@ def create_sentiment_timeline(analyzer):
                 color = 'gray'
                 marker = 'o'  # circle
             
-            # Plot marker
+
             plt.plot(closest_date, price, marker=marker, markersize=10, 
                     color=color, alpha=0.7, markeredgecolor='black')
             
-            # Add annotation for significant sentiment
             if abs(news['compound']) > 0.5:
                 plt.annotate(f"{news['title'][:30]}...",
                             xy=(closest_date, price),
@@ -197,19 +185,15 @@ def create_sentiment_timeline(analyzer):
 
 def create_sentiment_heatmap(analyzer):
     """Create a heatmap of daily sentiment by stock."""
-    # Ensure we have data
     if analyzer.sentiment_data.empty:
         print("No sentiment data available. Please run analysis first.")
         return
     
-    # Group by date and stock
     daily_sentiment = analyzer.sentiment_data.groupby(
         [analyzer.sentiment_data['date'].dt.date, 'stock'])['compound'].mean().reset_index()
     
-    # Pivot for heatmap format
     pivot_data = daily_sentiment.pivot(index='date', columns='stock', values='compound')
     
-    # Create visualization
     plt.figure(figsize=(12, 8))
     sns.heatmap(pivot_data, cmap='coolwarm', center=0, annot=True, fmt='.2f')
     plt.title('Daily Sentiment by Stock')
@@ -224,17 +208,14 @@ def create_sentiment_heatmap(analyzer):
 
 def main():
     """Run custom visualizations example."""
-    # Initialize analyzer with sample data
     analyzer = FinancialNewsAnalyzer(
         stocks=["AAPL", "MSFT", "GOOGL"],
         start_date="2023-01-01",
         end_date="2023-01-15"
     )
     
-    # Run analysis to get data
     analyzer.run_analysis()
     
-    # Generate custom visualizations
     print("\nCreating sentiment volume impact visualization...")
     create_sentiment_volume_impact(analyzer)
     
