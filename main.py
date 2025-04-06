@@ -13,7 +13,6 @@ from src.financial_analyzer.utils import save_results
 
 def main():
     """Run the Financial News Impact Analyzer."""
-    # Parse command line arguments
     parser = argparse.ArgumentParser(description='Analyze financial news impact on stock prices')
     parser.add_argument('--stocks', nargs='+', default=['AAPL', 'MSFT', 'GOOGL'],
                         help='List of stock symbols to analyze')
@@ -27,10 +26,8 @@ def main():
                         help='Directory to save results')
     args = parser.parse_args()
     
-    # Get API key from environment variable if not provided
     api_key = args.api_key or os.environ.get('NEWS_API_KEY', '')
     
-    # Initialize the analyzer
     analyzer = FinancialNewsAnalyzer(
         api_key=api_key,
         stocks=args.stocks,
@@ -38,10 +35,8 @@ def main():
         end_date=args.end_date
     )
     
-    # Run analysis
     analyzer.run_analysis()
     
-    # Save results
     if not os.path.exists(args.save_dir):
         os.makedirs(args.save_dir)
     
