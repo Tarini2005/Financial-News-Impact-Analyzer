@@ -26,13 +26,12 @@ class FinancialNewsAnalyzer:
         end_date : str, optional
             End date for historical data analysis (YYYY-MM-DD)
         """
-        # Set default parameters if none provided
+
         self.api_key = api_key or os.environ.get('NEWS_API_KEY', '')
         self.stocks = stocks or ['AAPL', 'MSFT', 'GOOGL']
         self.start_date = start_date or (datetime.now() - timedelta(days=365)).strftime('%Y-%m-%d')
         self.end_date = end_date or datetime.now().strftime('%Y-%m-%d')
         
-        # Initialize data containers
         self.news_data = pd.DataFrame()
         self.stock_data = {}
         self.sentiment_data = pd.DataFrame()
@@ -44,13 +43,10 @@ class FinancialNewsAnalyzer:
         """Run the complete analysis pipeline."""
         print("Starting analysis...")
         
-        #Fetching data
         self.fetch_data()
-        
-        #Analyzing sentiment
+
         self.analyze_news_sentiment()
         
-        #Calculating correlations
         self.calculate_correlations()
         
         print("Analysis complete!")
@@ -59,7 +55,6 @@ class FinancialNewsAnalyzer:
         """Fetch news and stock data."""
         print("Fetching data...")
         
-        # Fetching news data
         self.news_data = fetch_news(
             stocks=self.stocks,
             start_date=self.start_date,
@@ -67,7 +62,6 @@ class FinancialNewsAnalyzer:
             api_key=self.api_key
         )
         
-        # Fetching stock data
         self.stock_data = fetch_stock_data(
             stocks=self.stocks,
             start_date=self.start_date,
@@ -96,7 +90,6 @@ class FinancialNewsAnalyzer:
             print("Missing data. Please ensure both news and stock data are available.")
             return
         
-        #correlation calculation
         correlation_results = []
         
         for stock in self.stocks:
@@ -109,22 +102,17 @@ class FinancialNewsAnalyzer:
             if stock_news.empty:
                 continue
             
-            # Grouping news by date and calculate average sentiment
             daily_sentiment = stock_news.groupby(stock_news['date'].dt.date).agg({
                 'compound': 'mean',
                 'title': 'count'
             }).rename(columns={'title': 'news_count'})
             
-            # Converting index to datetime for joining
             daily_sentiment.index = pd.to_datetime(daily_sentiment.index)
             
-            # Joining with stock data
             combined_data = stock_df.join(daily_sentiment, how='left')
-            
-            # Calculating future returns
+
             combined_data['next_day_return'] = combined_data['Close'].pct_change(1).shift(-1) * 100
             
-            # Calculating correlation
             correlation = combined_data['compound'].corr(combined_data['next_day_return'])
             
             correlation_results.append({
@@ -146,7 +134,6 @@ class FinancialNewsAnalyzer:
             print("No sentiment data available. Please run analysis first.")
             return
         
-        # Creating visualizations
         plot_sentiment_trends(self.sentiment_data, self.stocks)
         plot_impact_analysis(self.correlation_data, self.sentiment_data, self.stock_data)
         
