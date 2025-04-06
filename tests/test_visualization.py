@@ -59,16 +59,12 @@ def test_plot_sentiment_trends(mock_savefig, mock_show, sample_sentiment_data):
     """Test sentiment trends visualization function."""
     stocks = ['AAPL', 'MSFT', 'GOOGL']
     
-    # Run the function
     plot_sentiment_trends(sample_sentiment_data, stocks)
     
-    # Check that savefig was called
     mock_savefig.assert_called_once_with('sentiment_trends.png', dpi=300)
     
-    # Check that show was called
     mock_show.assert_called_once()
     
-    # Close all plots to avoid affecting other tests
     plt.close('all')
 
 
@@ -77,14 +73,10 @@ def test_plot_sentiment_trends(mock_savefig, mock_show, sample_sentiment_data):
 def test_plot_impact_analysis(mock_savefig, mock_show, sample_correlation_data, 
                             sample_sentiment_data, sample_stock_data):
     """Test impact analysis visualization function."""
-    # Run the function
     plot_impact_analysis(sample_correlation_data, sample_sentiment_data, sample_stock_data)
     
-    # Check that savefig was called
     mock_savefig.assert_called_once_with('news_impact_analysis.png', dpi=300)
     
-    # Check that show was called
     mock_show.assert_called_once()
     
-    # Close all plots to avoid affecting other tests
     plt.close('all')
